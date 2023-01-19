@@ -1,0 +1,18 @@
+version: '3.3'
+
+services:
+  api:
+    container_name: ai-search-api
+    build:
+      dockerfile: Dockerfile
+      context: .
+    env_file: app/.env
+    ports:
+      - 5000:5000
+    networks:
+      outside:
+    restart: on-failure
+
+networks:
+  outside:
+    driver: bridge
