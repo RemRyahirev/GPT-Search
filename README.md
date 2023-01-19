@@ -1,71 +1,54 @@
 # Quest
  This is a web app that integrates GPT-3 with google searches.
 
- This analyses the first few results from a google search and stores snippets of text so the Assistant can remember facts. Then you can ask the Assistant about those facts and it will be able to retrive the relevant information gathered previously.
+# Dev run
 
- Anyone willing to help build this tool is welcome to send merge requests.
+1. obtain GPT 3 Api key
+2. create app/.env file with "API_KEY=sk-...." content
+3. run `docker compose up`
 
-## How can I try this out?
+# Port
 
-First, you will need an API key from OpenAI. [Click here to get your API key](https://beta.openai.com/account/api-keys). Make sure to store this key in a safe place.
+5000 and can't be changed for now
 
-Currently the web app is deployed [here](https://farrael004-quest-streamlit-app-deployment-experimental-76f30t.streamlit.app/). But if you'd like to run it locally, it's pretty simple.
+# Envs
 
-## Setup (Run it locally)
+* API_KEY - string. Key from GPT 3 Api, starts with 'sk-'.
 
-Install [python 3.10](https://www.python.org/downloads/release/python-3100/)
+Also looking for '.env' file into app/ dir for dev purpose. 
 
-Download the [install.bat](https://github.com/farrael004/Quest/blob/main/install.bat) (Windows) or [install.sh](https://github.com/farrael004/Quest/blob/main/install.sh) (macOS/Linux) file by right clicking the ```Raw``` button and 'Save link As...'.
+# API Doc
 
-![Installing1](tutorial/Installing1.png)
+## GET /search
 
-Put the file where you want the app to be installed.
+### params
 
-Double click the `install` file.
+* query - string. search query
 
-### Problems installing?
----
-If when you double-click ```install.bat``` it gives you an error. Open it using notepad and edit the following lines to ```py``` instead of ```python```. Then double-click the ```install.bat``` file again.
+### response
 
-![Troubleshoot1](tutorial/Troubleshooting1.png)
+* query - string. requested query
+* results - list of dicts. results of google search that passed to GPT
+  * link - string
+  * text - string
 
-### Run locally
----
-To quickly open the app after installation, double-click the `start` file located in the app folder (.bat for Windows and .sh for macOS/Linux). A command shell will open and two links will be displayed. Navigate to any of the two links in your browser.
+## GET /ask
 
-### Updating
----
-You can update the app to the latest version by double-clicking the `update` file located in the app folder (.bat for Windows and .sh for macOS/Linux).
+### params
 
-## Usage
+* query - string. a question to ask
+* creativity - int from 0 to 4, a creativity level where 0 is 'Strictly Factual' and 4 is 'Very Creative'
 
-There are three main sections in this app. The 'Assistant settings', the 'Ask the Assistant', and the 'Google search'.
+### response
 
-![Usage1](tutorial/Tutorial1.png)
+* query - string. requested query
+* results - dict
+  * answer - string. resulting answer from GPT
+  * prompt - string. total question to GPT that provides the resulting answer
+  * sources - list of dicts. results of google search that passed to GPT
+    * link - string
+    * text - string
 
----
-### Google search
+# Known issues
 
-To use the Google search box, enter a query in the text input and hit 'Submit'. This will trigger a search on Google using your query. The results will be listed and stored localy. These results can later be used by the Assistant to answer questions.
-
-![GoogleSearch](tutorial/Tutorial2.png)
-
----
-### Ask me anything
-
-Using the most relevant search results and most relevant chat history, the Assistant will answer your query. It's behaviour will be different depending on the settings you chose.
-
-![AskMeAnything](tutorial/Tutorial3.png)
-
----
-### Assistant settings
-
-The Assistant settings serves to determine how the Assistant will behave. If you set it to `Strictly Factual`, it will try to not say any facts beyond the Google searches. `Very Creative` will still use the searches, but allow itself to generate creative responses while being less concerned with factuality.
-
-## Create your own Assistant
-
-There are 5 default settings that can be chosen to customize how factual or creative the Assistant is. However, you can create your own settings to open for many more possibilities. To do this, navigate to the `conversation_settings` folder and open the `_create_setting.py` file.
-
-![Tutorial4](tutorial/Tutorial4.png)
-
-Inside, you can create the custom settings and give it a name. Then double-click `_create_setting_file` (.bat for Windows and .sh for macOS/Linux).
+* Sometimes error `'Connection to openaipublic.blob.core.windows.net timed out. (connect timeout=10)'` occurs due to tiktoken lib. On another launch everything seems ok.

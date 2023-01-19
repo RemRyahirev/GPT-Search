@@ -39,7 +39,7 @@ def google_search(search: str, search_depth: int):
         link_history = st.session_state['google_history']['link'].unique().tolist()
         while links_explored < search_depth or links_attempted == len(links):
             links_attempted += 1
-            if links == []:
+            if not links:
                 st.warning("No results found. 😢")
                 st.stop() 
             if links[links_attempted] in link_history: continue
